@@ -5,6 +5,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import tkinter as tk
 from tkinter import filedialog
+import os
+import shutil
 
 nltk.download('stopwords')
 
@@ -72,7 +74,7 @@ root.withdraw()  # Hide the root window
 file_path = filedialog.askopenfilename(title="Please Select a Text File")
 
 if file_path:
-    print("Selected file:", file_path)
+    print("Selected text file for Slicing!!! Please wait 🔃🔃🔃")
     
     # Read the content of the selected file
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -90,4 +92,53 @@ if file_path:
         print(f"Slice {i+1}:\n{slice_text}\n")
 
 else:
-    print("\n***************No file selected, Please select a Text File***************")
+    print("\n*************** No file selected, Please select a Text File ***************")
+
+# a function that takes the disjoint slices and writes each slice into a separate text file, named according to the slice number:
+
+def generate_and_save_slices(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        input_text = file.read()
+
+    preprocessed_input = preprocess_text(input_text)
+    slices = generate_slices(preprocessed_input)
+    disjoint_slices = find_disjoint_slices(slices)
+
+    with open('Sliced_Text.txt', 'w', encoding='utf-8') as output_file:
+        for i, slice_text in enumerate(disjoint_slices):
+            output_file.write(f"Slice {i + 1}:\n{slice_text}\n\n")
+
+if file_path:
+        print("\n*************** Please 🙏 Wait Until Saved All Slices Text File Into The Project File 🔃🔃🔃 ***************")
+        print() 
+        # Read the content of the selected file
+        with open(file_path, 'r', encoding='utf-8') as file:
+            input_text = file.read()
+
+        # Apply text preprocessing
+        preprocessed_input = preprocess_text(input_text)
+
+        # Generate slices and find disjoint slices
+        slices = generate_slices(preprocessed_input)
+        disjoint_slices = find_disjoint_slices(slices)
+
+        # Directory name for saving slices
+        directory_name = "Sliced_Text"
+
+        # Remove the directory if it exists
+        if os.path.exists(directory_name):
+            shutil.rmtree(directory_name)
+
+        # Create a directory to save slices
+        os.makedirs(directory_name)
+
+        # Save slices to individual files
+        for i, slice_text in enumerate(disjoint_slices):
+            filename = f"Slice_{i+1}.txt"
+            with open(os.path.join(directory_name, filename), 'w', encoding='utf-8') as sliced_file:
+                sliced_file.write(f"Slice {i+1}:\n{slice_text}\n\n")
+            print(f"Slice {i+1} saved to 'SlicedText/{filename}'")
+        print()
+        print("*************** Sliced_Text file created successfully with all slices ✅✅✅ ***************")
+else:
+        print("\n No file Saved")
